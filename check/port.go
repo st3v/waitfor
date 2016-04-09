@@ -13,6 +13,14 @@ var (
 	DefaultLogger  = ioutil.Discard
 )
 
+type PortCheck interface {
+	IsOpen() bool
+	IsClosed() bool
+	OnHost(string) PortCheck
+	ForNetwork(string) PortCheck
+	WithLogger(io.Writer) PortCheck
+}
+
 type portcheck struct {
 	port    int
 	host    string
@@ -20,7 +28,7 @@ type portcheck struct {
 	logger  io.Writer
 }
 
-func Port(p int) *portcheck {
+func Port(p int) PortCheck {
 	return &portcheck{
 		port:    p,
 		host:    DefaultHost,
@@ -29,17 +37,17 @@ func Port(p int) *portcheck {
 	}
 }
 
-func (p *portcheck) OnHost(host string) *portcheck {
+func (p *portcheck) OnHost(host string) PortCheck {
 	p.host = host
 	return p
 }
 
-func (p *portcheck) ForNetwork(network string) *portcheck {
+func (p *portcheck) ForNetwork(network string) PortCheck {
 	p.network = network
 	return p
 }
 
-func (p *portcheck) WithLogger(w io.Writer) *portcheck {
+func (p *portcheck) WithLogger(w io.Writer) PortCheck {
 	p.logger = w
 	return p
 }

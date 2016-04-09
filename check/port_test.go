@@ -22,7 +22,7 @@ var _ = Describe("Port", func() {
 		network   string
 		port      int
 		result    bool
-		portcheck portChecker
+		portcheck check.PortCheck
 	)
 
 	BeforeEach(func() {
@@ -149,11 +149,6 @@ var _ = Describe("Port", func() {
 		})
 	})
 })
-
-type portChecker interface {
-	IsOpen() bool
-	IsClosed() bool
-}
 
 func freeTcpPort() (int, error) {
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")

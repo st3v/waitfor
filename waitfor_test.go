@@ -43,6 +43,7 @@ var _ = Describe("waitfor", func() {
 	)
 
 	BeforeEach(func() {
+		cond.Lock()
 		cond = condition{}
 	})
 
