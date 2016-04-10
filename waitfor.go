@@ -16,12 +16,12 @@ func ConditionWithTimeout(condition Check, interval, timeout time.Duration) erro
 	ctx, _ := context.WithTimeout(context.Background(), timeout)
 	go Condition(condition, interval, errChan, ctx)
 
-	err := <-errChan
-	if err == context.DeadlineExceeded {
+	select {
+	case err := <-errChan:
+		return err
+	case <-ctx.Done():
 		return ErrTimeoutExceeded
 	}
-
-	return err
 }
 
 func Condition(condition Check, interval time.Duration, errChan chan error, ctx context.Context) {
