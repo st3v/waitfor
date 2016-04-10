@@ -15,7 +15,7 @@ import (
 	"github.com/st3v/waitfor/check"
 )
 
-var _ = Describe("Port", func() {
+var _ = Describe("PortCheck", func() {
 	var (
 		logger    *gbytes.Buffer
 		host      string
