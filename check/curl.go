@@ -1,7 +1,6 @@
 package check
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -20,7 +19,7 @@ type CurlCheck interface {
 	WithMethod(string) CurlCheck
 	WithAuth(string, string) CurlCheck
 	WithHeader(string, string) CurlCheck
-	WithData([]byte) CurlCheck
+	WithData(io.Reader) CurlCheck
 	WithLogger(io.Writer) CurlCheck
 }
 
@@ -30,7 +29,7 @@ type curlcheck struct {
 	username string
 	password string
 	headers  map[string]string
-	data     []byte
+	data     io.Reader
 	logger   io.Writer
 }
 
@@ -59,7 +58,7 @@ func (c *curlcheck) WithHeader(key, value string) CurlCheck {
 	return c
 }
 
-func (c *curlcheck) WithData(data []byte) CurlCheck {
+func (c *curlcheck) WithData(data io.Reader) CurlCheck {
 	c.data = data
 	return c
 }
@@ -69,7 +68,25 @@ func (c *curlcheck) WithLogger(w io.Writer) CurlCheck {
 	return c
 }
 
+type matcher func(*http.Response, []byte) bool
+
 func (c *curlcheck) MatchBody(regex *regexp.Regexp) bool {
+	matcher := func(resp *http.Response, body []byte) bool {
+		return regex.Match(body)
+	}
+
+	return c.matchResponse(matcher)
+}
+
+func (c *curlcheck) MatchResponseCode(statusCode int) bool {
+	matcher := func(resp *http.Response, body []byte) bool {
+		return resp.StatusCode == statusCode
+	}
+
+	return c.matchResponse(matcher)
+}
+
+func (c *curlcheck) matchResponse(m matcher) bool {
 	resp, err := c.response()
 	if err != nil {
 		fmt.Fprintln(c.logger, err.Error())
@@ -84,19 +101,8 @@ func (c *curlcheck) MatchBody(regex *regexp.Regexp) bool {
 	}
 
 	fmt.Fprintf(c.logger, "got HTTP status code %d and body:\n%s\n", resp.StatusCode, string(body))
-	return regex.Match(body)
-}
 
-func (c *curlcheck) MatchResponseCode(statusCode int) bool {
-	resp, err := c.response()
-	if err != nil {
-		fmt.Fprintln(c.logger, err.Error())
-		return false
-	}
-	defer resp.Body.Close()
-
-	fmt.Fprintf(c.logger, "got HTTP status code %d\n", resp.StatusCode)
-	return resp.StatusCode == statusCode
+	return m(resp, body)
 }
 
 func (c *curlcheck) response() (*http.Response, error) {
@@ -110,7 +116,7 @@ func (c *curlcheck) response() (*http.Response, error) {
 }
 
 func (c *curlcheck) request() (*http.Request, error) {
-	req, err := http.NewRequest(c.method, c.url, bytes.NewReader(c.data))
+	req, err := http.NewRequest(c.method, c.url, c.data)
 	if err != nil {
 		return nil, err
 	}

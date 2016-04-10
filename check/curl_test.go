@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"regexp"
+	"strings"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
@@ -151,11 +152,11 @@ var _ = Describe("curlcheck", func() {
 	})
 
 	Context("when the server requires a body", func() {
-		var data = []byte("expected body")
+		var data = "expected body"
 
 		BeforeEach(func() {
 			server.RouteToHandler("GET", "/header", ghttp.CombineHandlers(
-				ghttp.VerifyBody(data),
+				ghttp.VerifyBody([]byte(data)),
 				ghttp.RespondWith(200, "success"),
 			))
 			curlcheck = check.Curl(fmt.Sprintf("%s/header", server.URL())).WithMethod("GET").WithLogger(GinkgoWriter)
@@ -163,7 +164,7 @@ var _ = Describe("curlcheck", func() {
 
 		Context("and the correct headers have been specified", func() {
 			BeforeEach(func() {
-				curlcheck.WithData(data)
+				curlcheck.WithData(strings.NewReader(data))
 			})
 
 			Describe(".MatchResponseCode", func() {
