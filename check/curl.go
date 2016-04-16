@@ -13,8 +13,8 @@ var (
 )
 
 type CurlCheck interface {
-	MatchResponseCode(statusCode int) bool
-	MatchBody(regex *regexp.Regexp) bool
+	MatchResponseCode(int) bool
+	MatchBody(*regexp.Regexp) bool
 
 	WithMethod(string) CurlCheck
 	WithAuth(string, string) CurlCheck

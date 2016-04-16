@@ -16,6 +16,7 @@ var (
 type PortCheck interface {
 	IsOpen() bool
 	IsClosed() bool
+
 	OnHost(string) PortCheck
 	ForNetwork(string) PortCheck
 	WithLogger(io.Writer) PortCheck
