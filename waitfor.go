@@ -18,9 +18,9 @@ func ConditionWithTimeout(condition Check, interval, timeout time.Duration) erro
 
 	select {
 	case err := <-errChan:
-		return err
+		return handleErr(err)
 	case <-ctx.Done():
-		return ErrTimeoutExceeded
+		return handleErr(ctx.Err())
 	}
 }
 
@@ -42,4 +42,11 @@ func Condition(condition Check, interval time.Duration, errChan chan error, ctx 
 			}
 		}
 	}
+}
+
+func handleErr(err error) error {
+	if err == context.DeadlineExceeded {
+		return ErrTimeoutExceeded
+	}
+	return err
 }
