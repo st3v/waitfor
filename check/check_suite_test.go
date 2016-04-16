@@ -17,7 +17,7 @@ func TestCheck(t *testing.T) {
 
 var _ = BeforeSuite(func() {
 	var err error
-	fakeBin, err = gexec.Build("github.com/st3v/waitfor/check/fake/command")
+	fakeBin, err = gexec.Build("./fake/command")
 	Expect(err).ToNot(HaveOccurred())
 })
 
