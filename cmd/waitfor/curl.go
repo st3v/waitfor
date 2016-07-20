@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/codegangsta/cli"
+
 	"github.com/st3v/waitfor/check"
 )
 

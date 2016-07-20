@@ -6,6 +6,7 @@ import (
 	"regexp"
 
 	"github.com/codegangsta/cli"
+
 	"github.com/st3v/waitfor"
 	"github.com/st3v/waitfor/check"
 )

@@ -7,7 +7,7 @@ Command-line tool and Go library to wait for various conditions to become true. 
 
 ## Installation
 
-Make sure Go is installed and setup correctly. To pull the library into the `$GOPATH` directory, build the CLI, and put the binary into the `$GOBIN` directory, simply run:
+Make sure Go is installed and setup correctly. To pull the library into the `$GOPATH` directory, build the binary, and put it into the `$GOBIN` directory, simply run:
 
 ```
 go get github.com/st3v/waitfor/...

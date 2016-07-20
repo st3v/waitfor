@@ -6,9 +6,9 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"golang.org/x/net/context"
 
 	"github.com/st3v/waitfor"
-	"golang.org/x/net/context"
 )
 
 type condition struct {

@@ -10,11 +10,11 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
 	"github.com/onsi/gomega/gbytes"
+
 	"github.com/st3v/waitfor"
 	"github.com/st3v/waitfor/check"
-	"github.com/st3v/waitfor/cli/waitfor/fake"
+	"github.com/st3v/waitfor/cmd/waitfor/fake"
 )
 
 var _ = Describe("port command", func() {

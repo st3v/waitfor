@@ -9,5 +9,5 @@ import (
 
 func TestWaitfor(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "waitfor cli")
+	RunSpecs(t, "waitfor")
 }
