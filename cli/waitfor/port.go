@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strconv"
-	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/st3v/waitfor/check"
@@ -28,43 +27,9 @@ var port = func(c *cli.Context) int {
 	return port
 }
 
-var closedFlag = cli.BoolFlag{
-	Name:  "closed, c",
-	Usage: "wait for port to be closed",
-}
-
-var networkFlag = cli.StringFlag{
-	Name:  "network, n",
-	Value: "tcp",
-	Usage: "named network, ['tcp', 'tcp4', 'tcp6', 'udp', 'udp4', 'udp6', 'ip', 'ip4', 'ip6']",
-}
-
-var hostFlag = cli.StringFlag{
-	Name:  "host, h",
-	Value: "127.0.0.1",
-	Usage: "resolvable hostname or IP address",
-}
-
-var timeoutFlag = cli.DurationFlag{
-	Name:  "timeout, t",
-	Value: 300 * time.Second,
-	Usage: "maximum time to wait for",
-}
-
-var intervalFlag = cli.DurationFlag{
-	Name:  "interval, i",
-	Value: 1 * time.Second,
-	Usage: "time in-between checks",
-}
-
-var verboseFlag = cli.BoolFlag{
-	Name:  "verbose, v",
-	Usage: "enable additional logging",
-}
-
 var portCommand = cli.Command{
 	Name:  "port",
-	Usage: "wait for host to listen on port",
+	Usage: "wait for host to listen on port (or not)",
 
 	HideHelp: true,
 
