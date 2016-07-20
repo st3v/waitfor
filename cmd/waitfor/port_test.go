@@ -21,9 +21,9 @@ var _ = Describe("port command", func() {
 	var (
 		app = app()
 
-		portcheck *fake.PortCheck
-		err       error
-		args      []string
+		portcheck   *fake.PortCheck
+		expectedErr error
+		args        []string
 
 		expectedPort   int
 		actualPort     int
@@ -54,12 +54,12 @@ var _ = Describe("port command", func() {
 			check()
 			actualInterval = interval
 			actualTimeout = timeout
-			return err
+			return expectedErr
 		}
 	})
 
 	JustBeforeEach(func() {
-		err = nil
+		expectedErr = nil
 		app.Writer = io.MultiWriter(GinkgoWriter, actualOutput)
 		args = append([]string{"waitfor", "port", strconv.Itoa(expectedPort)}, args...)
 		app.Run(args)
@@ -72,32 +72,18 @@ var _ = Describe("port command", func() {
 	})
 
 	Context("when the check fails", func() {
-		var exitCode int
-
 		JustBeforeEach(func() {
-			err = errors.New("some-error")
-
-			exitCode = 0
-			exit = func(rc int) {
-				exitCode = rc
-				panic(rc)
-			}
-
-			Expect(func() {
-				app.Run([]string{"watchfor", "port", "123"})
-			}).To(Panic())
+			expectedErr = errors.New("some-error")
 		})
 
-		AfterEach(func() {
-			exit = os.Exit
-		})
-
-		It("exits with non-zero exit code", func() {
-			Expect(exitCode).ToNot(Equal(0))
+		It("returns an error", func() {
+			err := app.Run([]string{"watchfor", "port", "123"})
+			Expect(err).To(HaveOccurred())
 		})
 
 		It("logs the error", func() {
-			Expect(actualOutput).To(gbytes.Say(err.Error()))
+			app.Run([]string{"watchfor", "port", "123"})
+			Expect(actualOutput).To(gbytes.Say(expectedErr.Error()))
 		})
 	})
 

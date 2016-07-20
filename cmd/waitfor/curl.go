@@ -54,7 +54,7 @@ var curlCommand = cli.Command{
 		verboseFlag,
 	},
 
-	Action: func(c *cli.Context) {
+	Action: func(c *cli.Context) error {
 		statusCode := c.Int("status")
 		regex := c.String("match")
 		method := c.String("method")
@@ -108,9 +108,10 @@ var curlCommand = cli.Command{
 		fmt.Fprintf(c.App.Writer, "Waiting for curl to %s...\n", state)
 		if err := waitForConditionWithTimeout(condition, interval, timeout); err != nil {
 			fmt.Fprintf(c.App.Writer, "Error waiting for curl to %s: %s\n", state, err)
-			exit(1)
+			return err
 		}
 
 		fmt.Fprintf(c.App.Writer, "Success: curl did %s\n", state)
+		return nil
 	},
 }

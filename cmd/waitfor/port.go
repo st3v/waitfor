@@ -43,7 +43,7 @@ var portCommand = cli.Command{
 		verboseFlag,
 	},
 
-	Action: func(c *cli.Context) {
+	Action: func(c *cli.Context) error {
 		host := c.String("host")
 		network := c.String("network")
 		timeout := c.Duration("timeout")
@@ -70,9 +70,10 @@ var portCommand = cli.Command{
 
 		if err := waitForConditionWithTimeout(checkFunc, interval, timeout); err != nil {
 			fmt.Fprintf(c.App.Writer, "Error waiting for %s port: %s\n", state, err)
-			exit(1)
+			return err
 		}
 
 		fmt.Fprintf(c.App.Writer, "Success: port is %s\n", state)
+		return nil
 	},
 }

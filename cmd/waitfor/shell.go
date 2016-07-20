@@ -20,7 +20,7 @@ var shellCommand = cli.Command{
 	Action:          shellAction,
 }
 
-var shellAction = func(c *cli.Context) {
+var shellAction = func(c *cli.Context) error {
 	timeout := c.GlobalDuration("timeout")
 	interval := c.GlobalDuration("interval")
 	verbose := c.GlobalBool("verbose")
@@ -70,8 +70,9 @@ var shellAction = func(c *cli.Context) {
 	fmt.Fprintf(c.App.Writer, "Waiting for %s to %s\n", cmd, state)
 	if err := waitfor.ConditionWithTimeout(checkFunc, interval, timeout); err != nil {
 		fmt.Fprintf(c.App.Writer, "Error waiting for %s: %s\n", cmd, err)
-		exit(1)
+		return err
 	}
 
 	fmt.Fprintf(c.App.Writer, "Success: %s did %s\n", cmd, state)
+	return nil
 }
