@@ -10,9 +10,7 @@ before_script:
   - go get github.com/onsi/gomega
   - go get -v ./...
 script:
-  - ginkgo -r -race -randomizeAllSpecs -cover
-  - gover
-  - goveralls -service travis-ci -coverprofile=gover.coverprofile -repotoken $COVERALL_TOKEN
+  - ginkgo -r -race -randomizeAllSpecs -cover && find ./cmd -name "*.coverprofile" -type f -delete && gover && goveralls -service travis-ci -coverprofile=gover.coverprofile -repotoken $COVERALL_TOKEN
 sudo: false
 env:
   global:
